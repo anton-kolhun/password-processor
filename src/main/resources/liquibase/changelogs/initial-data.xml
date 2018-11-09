@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        logicalFilePath="changelogs/initial-data.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="undisclosed" id="create-token_info-table">
+        <createTable tableName="TOKEN_INFO">
+            <column name="TOKEN_INFO_ID" type="varchar(40)">
+                <constraints primaryKey="true" primaryKeyName="pk_token_info"/>
+            </column>
+            <column name="TOKEN" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPIRED_IN" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REQUESTER" type="varchar(40)"/>
+            <column name="CREATED_AT" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="undisclosed" id="create-index-token_info-table">
+        <createIndex indexName="idx_token_info_token" tableName="TOKEN_INFO">
+            <column name="TOKEN"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="undisclosed" id="create-token_info_history-table">
+        <createTable tableName="TOKEN_INFO_HISTORY">
+            <column name="TOKEN_INFO_ID" type="varchar(40)">
+                <constraints primaryKey="true" primaryKeyName="pk_token_info_history"/>
+            </column>
+            <column name="REVISION_TYPE" type="varchar(40)">
+                <constraints primaryKey="true" primaryKeyName="pk_password_info_history"/>
+            </column>
+            <column name="EXECUTION_TIME" type="timestamp"/>
+            <column name="TOKEN" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPIRED_IN" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REQUESTER" type="varchar(40)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="undisclosed" id="create-password_entry-table">
+        <createTable tableName="PASSWORD_ENTRY">
+            <column name="PASSWORD_ENTRY_ID" type="varchar(40)">
+                <constraints primaryKey="true" primaryKeyName="pk_password_entry"/>
+            </column>
+            <column name="TOKEN_INFO_ID" type="varchar(40)"/>
+            <column name="PASSWORD" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SEQ_NUMBER" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="undisclosed" id="create-index-password_entry">
+        <createIndex indexName="idx_password_entry_pass_info_id" tableName="PASSWORD_ENTRY">
+            <column name="TOKEN_INFO_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="undisclosed" id="create-password_entry_history-table">
+        <createTable tableName="PASSWORD_ENTRY_HISTORY">
+            <column name="PASSWORD_ENTRY_HISTORY_ID" type="varchar(40)">
+                <constraints primaryKey="true" primaryKeyName="pk_password_entry_history"/>
+            </column>
+            <column name="TOKEN_INFO_ID" type="varchar(40)">
+            </column>
+            <column name="REVISION_TYPE" type="varchar(40)">
+
+            </column>
+            <column name="PASSWORD" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SEQ_NUMBER" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="undisclosed" id="fk_pass_ent_hst_tkn_inf_hst">
+        <addForeignKeyConstraint baseColumnNames="TOKEN_INFO_ID,REVISION_TYPE"
+                                 baseTableName="PASSWORD_ENTRY_HISTORY"
+                                 constraintName="fk_password_tkn_inf_hist"
+                                 referencedColumnNames="TOKEN_INFO_ID,REVISION_TYPE"
+                                 referencedTableName="TOKEN_INFO_HISTORY"/>
+    </changeSet>
+
+</databaseChangeLog>
